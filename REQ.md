@@ -8,7 +8,7 @@ Docs : https://robomaster-dev.readthedocs.io/en/latest/
 - IMU
 - ESC
 - Position
-- ToF sensor (อยู่บน gimbal ห่างจากจุดหมุน 7.5 cm อยู่สูง 5.5)
+- ToF sensor (อยู่บน gimbal ห่างจากจุดหมุน 7.5 cm อยู่สูง 6.5)
 - camera (อยู่บน gimbal ห่างจากจุดหมุน 7.5 cm สูง 3.5 cm)
 
 ขนาดของหุ่น:
