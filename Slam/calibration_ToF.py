@@ -5,11 +5,11 @@ from robomaster import robot
 
 def main():
     print("==================================================")
-    print("  RoboMaster EP - ToF Calibration (Quadratic Degree 2)")
+    print("  RoboMaster EP - ToF Calibration (Full Range 10-180 cm)")
     print("==================================================")
     
-    # เพิ่มจุดวัดระยะจริงให้ถี่ขึ้นเพื่อความแม่นยำของกราฟกำลังสอง (หน่วย cm)
-    test_distances_cm = [10.0, 15.0, 20.0, 25.0, 30.0, 40.0, 50.0, 60.0]
+    # 🌟 ขยายระยะเก็บข้อมูลให้ครอบคลุมการสแกนข้ามช่อง Grid (10 - 180 cm)
+    test_distances_cm = [10.0, 15.0, 20.0, 25.0, 30.0, 40.0, 50.0, 60.0, 80.0, 100.0, 120.0, 150.0, 180.0]
     
     raw_samples_list = []
     real_distances_list = []
@@ -34,12 +34,15 @@ def main():
     ep_sensor.sub_distance(freq=50, callback=tof_handler)
     time.sleep(1.0)
     
-    print("\nเตรียมหุ่นยนต์ให้อยู่ในแนวตรงกับกำแพง หรือแผ่นฉากตั้งตรง")
+    print("\nวางหุ่นยนต์ให้เล็งตรงกับกำแพง/ฉากตั้งตรง")
     
     try:
         for d_real in test_distances_cm:
-            input(f"\n👉 วางหุ่นยนต์ห่างจากกำแพงระยะจริง {d_real:.1f} cm แล้วกด Enter...")
-            
+            user_in = input(f"\n👉 วางหุ่นยนต์ห่างจากกำแพงระยะจริง {d_real:.1f} cm (กด Enter เพื่อเก็บค่า / กด 's' เพื่อข้าม): ").strip().lower()
+            if user_in == 's':
+                print(f"ข้ามระยะ {d_real:.1f} cm")
+                continue
+
             print("กำลังเก็บค่าจาก ToF Sensor (100 samples)...")
             samples = []
             start_t = time.time()
@@ -55,47 +58,50 @@ def main():
                 
             raw_median = float(np.median(samples))
             raw_std = float(np.std(samples))
-            print(f"✅ ระยะจริง: {d_real:.1f} cm | ค่าดัก ToF: {raw_median:.2f} cm (Std: {raw_std:.2f})")
+            print(f"✅ ระยะจริง: {d_real:.1f} cm | ค่าดัก ToF Raw: {raw_median:.2f} cm (Std: {raw_std:.2f})")
             
             raw_samples_list.append(raw_median)
             real_distances_list.append(d_real)
 
         if len(raw_samples_list) < 4:
-            print("\n❌ ข้อมูลไม่เพียงพอสำหรับสร้าง Quadratic Curve (ต้องการอย่างน้อย 4 จุด)!")
+            print("\n❌ ข้อมูลไม่เพียงพอสำหรับทำ Calibration (ต้องการอย่างน้อย 4 จุด)!")
             return
 
         x_raw = np.array(raw_samples_list)
         y_real = np.array(real_distances_list)
         
-        # 🌟 คำนวณ Polynomial Degree 2: Y = a*X^2 + b*X + c
+        # คำนวณ Quadratic Degree 2: Y = a*X^2 + b*X + c
         poly_coefs = np.polyfit(x_raw, y_real, 2)
         a, b, c = poly_coefs
         
-        # คำนวณ R-squared (Coefficient of Determination)
         y_pred = np.polyval(poly_coefs, x_raw)
         ss_res = np.sum((y_real - y_pred) ** 2)
         ss_tot = np.sum((y_real - np.mean(y_real)) ** 2)
         r_squared = 1 - (ss_res / ss_tot)
         
         print("\n==========================================")
-        print("     QUADRATIC CALIBRATION RESULT        ")
+        print("     FULL-RANGE CALIBRATION RESULT        ")
         print("==========================================")
         print(f"สมการปรับแก้: Real_Dist = ({a:.6f} * Raw^2) + ({b:.6f} * Raw) + ({c:.4f})")
         print(f"ความแม่นยำ R²: {r_squared:.4f}")
         
+        # 🌟 บันทึกคีย์ทั้งแบบเก่า (slope/intercept) และแบบใหม่ (a, b, c) ให้โค้ดทุกเวอร์ชันอ่านได้ ไม่พัง!
         calib_data = {
             "model_type": "quadratic",
             "a": float(a),
             "b": float(b),
             "c": float(c),
+            "slope": float(b),      # รองรับโค้ดรุ่นเก่าที่เรียกใช้ slope
+            "intercept": float(c),  # รองรับโค้ดรุ่นเก่าที่เรียกใช้ intercept
             "r_squared": float(r_squared),
+            "max_calib_range_cm": float(np.max(y_real)),
             "timestamp": time.strftime("%Y-%m-%d %H:%M:%S")
         }
         
         with open("tof_calib_params.json", "w", encoding="utf-8") as f:
             json.dump(calib_data, f, indent=4)
             
-        print("💾 บันทึกไฟล์ 'tof_calib_params.json' เรียบร้อยพร้อมใช้งาน!")
+        print("💾 บันทึกไฟล์ 'tof_calib_params.json' เรียบร้อยแล้ว!")
 
     finally:
         try:

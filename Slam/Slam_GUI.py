@@ -362,8 +362,14 @@ def tof_data_handler(sub_info):
             if raw_dist_cm <= 0:
                 calibrated_dist_cm = 999.0
             else:
+                # 1. คำนวณระยะตามสมการ Calibration
                 calibrated_dist_cm = (TOF_A * (raw_dist_cm ** 2)) + (TOF_B * raw_dist_cm) + TOF_C
-                calibrated_dist_cm = max(0.0, calibrated_dist_cm)
+                
+                # 🌟 2. เพิ่มตัวกรอง Safety Boundary ป้องกันระยะไกลพาราโบลางอเพี้ยน
+                if calibrated_dist_cm <= 0 or calibrated_dist_cm > 400.0:
+                    calibrated_dist_cm = raw_dist_cm  # Fallback กลับไปใช้ค่า Raw
+                else:
+                    calibrated_dist_cm = max(0.0, calibrated_dist_cm)
         else:
             calibrated_dist_cm = 999.0
     except (ValueError, TypeError):
@@ -374,14 +380,6 @@ def tof_data_handler(sub_info):
         hub.tof_last_update_time = time.time()
         tof_buffer.append(calibrated_dist_cm)
         hub.tof_filtered = float(np.median(list(tof_buffer))) if tof_buffer else calibrated_dist_cm
-        
-        if hub.is_aligning or hub.is_rotating or hub.is_scanning:
-            hub.emergency_stop = False
-        else:
-            if 0.5 < calibrated_dist_cm < BRAKE_TRIGGER_TOF:
-                hub.emergency_stop = True
-            elif calibrated_dist_cm >= SAFE_MIN_TOF:
-                hub.emergency_stop = False
 
 def gimbal_data_handler(sub_info):
     if sub_info and len(sub_info) > 1 and sub_info[1] is not None:
@@ -546,55 +544,76 @@ def check_and_recenter(ep_chassis, ep_gimbal, tof_dict):
 # ==========================================
 # 6. ODOMETRY + NAVIGATION CONTROL
 # ==========================================
+
 def turn_to_orientation_imu(ep_chassis, ep_gimbal, target_yaw_deg):
+    """
+    🌟 ปรับแก้การเลี้ยวขาด: ปล่อยให้ Onboard Controller หมุนครบรอบแบบนุ่มนวล
+    ถอด Active Brake ที่ตัดจังหวะออก เพื่อให้แรงเหวี่ยงพาหุ่นเข้ามุม 90 องศา พอดีเป๊ะ
+    """
     with hub.lock:
         hub.is_rotating = True
         hub.emergency_stop = False
-    
-    target_yaw_deg = normalize_angle(target_yaw_deg)
-    
-    with hub.lock:
-        curr_yaw = hub.pose['chassis_yaw']
-        
-    diff = normalize_angle(target_yaw_deg - curr_yaw)
-    
-    if abs(abs(diff) - 180.0) < 5.0:
-        with hub.lock:
-            hub.last_turn_dir *= -1
-            turn_dir = hub.last_turn_dir
-        diff = 180.0 * turn_dir
 
-    if abs(diff) <= 2.5:
+    target_yaw_deg = normalize_angle(target_yaw_deg)
+    reset_gimbal_to_center_fast(ep_gimbal)
+
+    # หน่วงรอสั้นๆ ให้ IMU นิ่งสนิท
+    time.sleep(0.05)
+
+    with hub.lock:
+        if hub.latest_raw_yaw is not None:
+            curr_yaw = normalize_angle(hub.latest_raw_yaw + hub.yaw_offset_deg)
+        else:
+            curr_yaw = hub.pose['chassis_yaw']
+
+    diff = normalize_angle(target_yaw_deg - curr_yaw)
+
+    # 🌟 ลด Deadband ลงเหลือ 0.8 องศา เพื่อไม่ให้ข้ามการเลี้ยวถ้าระดับเอียงเล็กน้อย
+    if abs(diff) <= 0.8:
         with hub.lock:
             hub.is_rotating = False
         return True
 
-    log_event(f"[TURN START] Rotating {diff:.1f} deg to Target Yaw: {target_yaw_deg:.0f} deg")
-    hub.set_status_msg(f"Rotating relative {diff:.0f} deg")
-    
-    reset_gimbal_to_center_fast(ep_gimbal)
-    
+    # 🌟 ปรับสปีดการหมุนให้มีแรงบิดพอดี ไม่ช้าจนเลี้ยวขาด และไม่เร็วจนสะบัดเกิน
+    abs_diff = abs(diff)
+    if abs_diff <= 15.0:
+        exec_z_speed = 55  
+    elif abs_diff <= 45.0:
+        exec_z_speed = 75
+    else:
+        exec_z_speed = 95   # สปีด 95 deg/s ช่วยให้มีแรงบิดส่งเข้ามุม 90 องศา ได้เต็มที่
+
+    log_event(f"[TURN START] Rotating Relative {diff:.1f} deg to Target: {target_yaw_deg:.0f} deg (Speed: {exec_z_speed})")
+    hub.set_status_msg(f"Rotating {diff:.0f} deg")
+
     try:
-        ep_chassis.move(x=0, y=0, z=-diff, z_speed=130).wait_for_completed(timeout=3.0)
-        time.sleep(0.08)
+        # สั่งเลี้ยวหมุนตัว และรอให้ Onboard Controller ทำงานจบครบกระบวนการหมุน
+        ep_chassis.move(x=0, y=0, z=-diff, z_speed=exec_z_speed).wait_for_completed(timeout=3.2)
     except Exception as e:
-        log_event(f"[TURN ERROR TIMEOUT] {e}")
-    
-    stop_chassis_active_brake(ep_chassis, brake_duration=0.08)
+        log_event(f"[TURN TIMEOUT/ERROR] {e}")
+
+    # 🌟 เอา stop_chassis_active_brake ออก แล้วเปลี่ยนเป็นเพียงการหยุดสั่งงานนิ่งๆ ให้ล้อเข้าตำแหน่ง
+    ep_chassis.drive_wheels(w1=0, w2=0, w3=0, w4=0)
     reset_gimbal_to_center_fast(ep_gimbal)
-    time.sleep(0.08)
-    
+    time.sleep(0.12)  # ให้เวลาหุ่นยนต์ตั้งตัวนิ่งสนิท 0.12 วินาที
+
+    # 🌟 Hard Reset Snap ค่า Heading และ Sync Offset ใหม่
     with hub.lock:
-        snapped_yaw = snap_to_cardinal_yaw(target_yaw_deg)
-        hub.pose['chassis_yaw'] = snapped_yaw
         if hub.latest_raw_yaw is not None:
+            snapped_yaw = snap_to_cardinal_yaw(target_yaw_deg)
+            hub.pose['chassis_yaw'] = snapped_yaw
             hub.yaw_offset_deg = (snapped_yaw - hub.latest_raw_yaw) % 360.0
+
         hub.is_rotating = False
 
-    log_event(f"[TURN COMPLETED] Settled Yaw: {snapped_yaw:.1f} deg")
+    log_event(f"[TURN COMPLETED] Settled Heading: {hub.pose['chassis_yaw']:.1f} deg")
     return True
 
 def align_wall_heading_from_tof(ep_chassis, start_tof_side_cm, end_tof_side_cm, side_name):
+    """
+    🌟 ปรับปรุงการเอียงขนานกำแพง (Wall Alignment) ให้กลับมาทำงานแม่นยำ
+    คำนวณ Error จาก ToF สองจุด และสั่งหมุนชดเชยอย่างสมดุล
+    """
     if start_tof_side_cm < 45.0 and end_tof_side_cm < 45.0:
         delta_d = end_tof_side_cm - start_tof_side_cm
         travel_dist_cm = 60.0
@@ -602,14 +621,27 @@ def align_wall_heading_from_tof(ep_chassis, start_tof_side_cm, end_tof_side_cm, 
         angle_error_rad = math.atan2(delta_d, travel_dist_cm)
         angle_error_deg = math.degrees(angle_error_rad)
         
+        # คำนวณทิศทางแก้ไขมุม z
         correct_z_deg = -angle_error_deg if side_name == 'RIGHT' else angle_error_deg
 
-        if 1.0 < abs(correct_z_deg) <= 8.0:
+        # Filter: แก้ไขเฉพาะเมื่อเอียงเกิน 1.2 องศา แต่ไม่เกิน 10 องศา (ป้องกัน Noise)
+        if 1.2 < abs(correct_z_deg) <= 10.0:
             log_event(f"[WALL ALIGN] Correcting Parallel Drift: {correct_z_deg:.2f} deg using '{side_name}' wall (Delta: {delta_d:.1f}cm)")
             try:
-                ep_chassis.move(x=0, y=0, z=correct_z_deg, z_speed=50).wait_for_completed(timeout=2.0)
+                # 🌟 เพิ่ม z_speed เป็น 75 deg/s เพื่อให้มีแรงชนะแรงเสียดทานล้อ Mecanum
+                ep_chassis.move(x=0, y=0, z=correct_z_deg, z_speed=75).wait_for_completed(timeout=1.5)
+                
+                # Active Brake ล็อกล้อหยุดนิ่ง
                 stop_chassis_active_brake(ep_chassis, brake_duration=0.08)
-                time.sleep(0.08)
+                time.sleep(0.06)
+
+                # 🌟 ซิงค์ IMU Offset ใหม่หลังปรับขนานเสร็จ เพื่อให้ทิศทางตรงกับโลกจริง
+                with hub.lock:
+                    if hub.latest_raw_yaw is not None:
+                        current_snap = snap_to_cardinal_yaw(hub.pose['chassis_yaw'])
+                        hub.pose['chassis_yaw'] = current_snap
+                        hub.yaw_offset_deg = (current_snap - hub.latest_raw_yaw) % 360.0
+
             except Exception as e:
                 log_event(f"[WALL ALIGN TIMEOUT] {e}")
 
@@ -680,7 +712,6 @@ def move_forward_60cm_straight(ep_chassis, target_step_m=move_target_step_m, tar
     """
     เดินหน้า 60 cm พร้อม Calibration Factor, Ramp-down 85% และ Active Braking
     """
-    # 🌟 คูณ Calibration Factor ปรับระยะเป้าหมายให้ตรงตามโลกจริง
     calibrated_target_m = target_step_m * DISTANCE_CALIB_FACTOR
 
     with hub.lock:
@@ -717,7 +748,7 @@ def move_forward_60cm_straight(ep_chassis, target_step_m=move_target_step_m, tar
         derivative = (error - prev_error) / 0.01
         prev_error = error
 
-        # 🌟 Ramp-down Profile: พอเดินใกล้ถึง 85% ให้ผ่อนความเร็วลงเพื่อตัดแรงไถล
+        # Ramp-down Profile: พอเดินใกล้ถึง 85% ให้ผ่อนความเร็วลงเพื่อตัดแรงไถล
         if distance_traveled >= (calibrated_target_m * 0.85):
             current_exec_speed = 0.10
         else:
@@ -727,7 +758,7 @@ def move_forward_60cm_straight(ep_chassis, target_step_m=move_target_step_m, tar
         ep_chassis.drive_speed(x=current_exec_speed, y=0, z=-z_speed)
         time.sleep(0.01)
 
-    # 🌟 Active Brake หยุดล้อล็อกนิ่งทันทีหลังเดินครบรอบ
+    # Active Brake หยุดล้อล็อกนิ่งทันทีหลังเดินครบรอบ
     stop_chassis_active_brake(ep_chassis, brake_duration=0.10)
 
     with hub.lock:
