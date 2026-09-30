@@ -1,0 +1,56 @@
+{
+  "start_grid": {
+    "x": 0,
+    "y": 0
+  },
+  "targets_to_shoot": [
+    {
+      "target_id": 1,
+      "color": "red",
+      "shape": "CIRCLE",
+      "standing_grid": {
+        "x": 0,
+        "y": 0
+      },
+      "firing_yaw_deg": -1.5,
+      "firing_direction": "N",
+      "is_knocked_down": true
+    },
+    {
+      "target_id": 2,
+      "color": "red",
+      "shape": "CIRCLE",
+      "standing_grid": {
+        "x": 0,
+        "y": 1
+      },
+      "firing_yaw_deg": 91.8,
+      "firing_direction": "E",
+      "is_knocked_down": true
+    },
+    {
+      "target_id": 3,
+      "color": "green",
+      "shape": "RECT_H",
+      "standing_grid": {
+        "x": 1,
+        "y": 4
+      },
+      "firing_yaw_deg": 4.6,
+      "firing_direction": "N",
+      "is_knocked_down": true
+    },
+    {
+      "target_id": 4,
+      "color": "green",
+      "shape": "RECT_V",
+      "standing_grid": {
+        "x": 1,
+        "y": 4
+      },
+      "firing_yaw_deg": -47.4,
+      "firing_direction": "W",
+      "is_knocked_down": true
+    }
+  ]
+}

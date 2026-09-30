@@ -1,0 +1,139 @@
+16:21:39 [INFO] [TOF CALIB LOADED] Loaded 'd:\code\robot\Robomaster_group_final\Run1\tof_calib_params.json' (Max Range: 180.0 cm)
+16:21:39 [INFO] [SHARP CALIB LOADED] Loaded 'd:\code\robot\Robomaster_group_final\Run1\calibration_sharp_poly.json' successfully
+16:21:39 [INFO] [ROI MASK] Loaded 'd:\code\robot\Robomaster_group_final\Run1\roi_mask.png' successfully
+16:21:58 [INFO] [SYSTEM INIT] Setting Gimbal to Front (Fast Moveto)...
+16:21:59 [INFO] [SHARP WORKER] Sharp Sensor Thread Started.
+16:21:59 [INFO] [CALIBRATION] Calibrating Local Frame...
+16:21:59 [INFO] [CALIBRATION] Calibration Complete!
+16:21:59 [INFO] --- STEP 1 | Grid(0, 0) | Time: 0.0s ---
+16:21:59 [INFO] [CENTERING MICRO] Sharp IR (L:14.3, R:9.5) | Gentle Shift: 1.7 cm
+16:22:03 [INFO] [TARGET LOCK] Verifying target (RED ALL_SHAPES) at Pitch:-3.0°
+16:22:03 [INFO] [TARGET MARKED] Target marked at Grid(0, 2) from distance 134.1 cm
+16:22:03 [INFO] [TARGET PASSED] ID#1: RED (CIRCLE) at World (26.6, 164.0)
+16:22:03 [INFO] 📸 [TARGET INSPECTION SAVED] Image saved: 'detected_targets\Target_ID1_red_CIRCLE_PASSED_20260930_162203.png'
+16:22:03 [INFO] [TARGET MARKED FROM DISTANCE] Target registered at 134.1 cm from center
+16:22:07 [INFO] --- STEP 2 | Grid(0, 1) | Time: 8.1s ---
+16:22:10 [INFO] [TARGET LOCK] Verifying target (RED ALL_SHAPES) at Pitch:-7.1°
+16:22:11 [INFO] [TARGET REJECTED] Duplicate target detected at distance 6.7 cm
+16:22:11 [INFO] 📸 [TARGET INSPECTION SAVED] Image saved: 'detected_targets\Target_ID1_red_RECT_V_REJECTED_DUP_20260930_162211.png'
+16:22:11 [INFO] [CLOSE FIRING] Target detected within 110.0 cm -> Fine alignment & Firing...
+16:22:11 [INFO] 🔥 [BLASTER FIRING] Shooting IR Laser at target (RED RECT_V)!
+16:22:11 [INFO] [BLASTER FIRING] IR Firing completed successfully.
+16:22:11 [INFO] [TARGET MARKED FROM DISTANCE] Target registered at 80.7 cm from center
+16:22:12 [INFO] [TARGET LOCK] Verifying target (RED ALL_SHAPES) at Pitch:-3.2°
+16:22:12 [INFO] [TARGET MARKED] Target marked at Grid(2, 1) from distance 134.1 cm
+16:22:12 [INFO] [TARGET PASSED] ID#2: RED (CIRCLE) at World (164.1, 85.8)
+16:22:12 [INFO] 📸 [TARGET INSPECTION SAVED] Image saved: 'detected_targets\Target_ID2_red_CIRCLE_PASSED_20260930_162212.png'
+16:22:12 [INFO] [TARGET MARKED FROM DISTANCE] Target registered at 134.1 cm from center
+16:22:16 [INFO] [FAST SAFETY BRAKE] Front wall detected! Ground dist: 28.3 cm <= 30.0 cm | Traveled: 54.5 cm
+16:22:16 [INFO] --- STEP 3 | Grid(0, 2) | Time: 16.9s ---
+16:22:21 [INFO] [TURNING START] Target: -180° | Current: -0.1° | Diff: -179.9°
+16:22:24 [INFO] [TURNING COMPLETED] Settled Heading: -179.8°
+16:22:26 [INFO] --- STEP 4 | Grid(0, 1) | Time: 27.5s ---
+16:22:30 [INFO] [TARGET LOCK] Verifying target (RED ALL_SHAPES) at Pitch:-6.8°
+16:22:31 [INFO] [TARGET REJECTED] Duplicate target detected at distance 12.3 cm
+16:22:31 [INFO] 📸 [TARGET INSPECTION SAVED] Image saved: 'detected_targets\Target_ID2_red_RECT_V_REJECTED_DUP_20260930_162231.png'
+16:22:31 [INFO] [CLOSE FIRING] Target detected within 110.0 cm -> Fine alignment & Firing...
+16:22:31 [INFO] 🔥 [BLASTER FIRING] Shooting IR Laser at target (RED RECT_V)!
+16:22:31 [INFO] [BLASTER FIRING] IR Firing completed successfully.
+16:22:31 [INFO] [TARGET MARKED FROM DISTANCE] Target registered at 86.3 cm from center
+16:22:32 [INFO] [TARGET LOCK] Verifying target (RED ALL_SHAPES) at Pitch:-4.8°
+16:22:32 [INFO] [TARGET REJECTED] Duplicate target detected at distance 3.7 cm
+16:22:32 [INFO] 📸 [TARGET INSPECTION SAVED] Image saved: 'detected_targets\Target_ID2_red_CIRCLE_REJECTED_DUP_20260930_162232.png'
+16:22:32 [INFO] [TARGET MARKED FROM DISTANCE] Target registered at 131.2 cm from center
+16:22:35 [INFO] [TURNING START] Target: 90° | Current: -180.0° | Diff: -90.0°
+16:22:37 [INFO] [TURNING COMPLETED] Settled Heading: 90.4°
+16:22:39 [INFO] --- STEP 5 | Grid(1, 1) | Time: 40.4s ---
+16:22:42 [INFO] [TARGET LOCK] Verifying target (RED ALL_SHAPES) at Pitch:-8.5°
+16:22:43 [INFO] [TOF ALIGNMENT] Open space detected ahead & sides. Skipping ToF alignment.
+16:22:43 [INFO] [TURNING START] Target: 0° | Current: 90.1° | Diff: -90.1°
+16:22:45 [INFO] [TURNING COMPLETED] Settled Heading: 0.7°
+16:22:47 [INFO] --- STEP 6 | Grid(1, 2) | Time: 48.3s ---
+16:22:54 [INFO] --- STEP 7 | Grid(1, 3) | Time: 55.2s ---
+16:22:57 [INFO] [TOF ALIGNMENT] Open space detected ahead & sides. Skipping ToF alignment.
+16:22:59 [INFO] --- STEP 8 | Grid(1, 4) | Time: 60.5s ---
+16:23:03 [INFO] [TARGET LOCK] Verifying target (GREEN ALL_SHAPES) at Pitch:-6.3°
+16:23:03 [INFO] [TARGET MARKED] Target marked at Grid(1, 5) from distance 82.3 cm
+16:23:03 [INFO] [TARGET PASSED] ID#3: GREEN (RECT_H) at World (96.7, 352.0)
+16:23:03 [INFO] 📸 [TARGET INSPECTION SAVED] Image saved: 'detected_targets\Target_ID3_green_RECT_H_PASSED_20260930_162303.png'
+16:23:03 [INFO] [CLOSE FIRING] Target detected within 110.0 cm -> Fine alignment & Firing...
+16:23:03 [INFO] 🔥 [BLASTER FIRING] Shooting IR Laser at target (GREEN RECT_H)!
+16:23:04 [INFO] [BLASTER FIRING] IR Firing completed successfully.
+16:23:04 [INFO] [TARGET MARKED FROM DISTANCE] Target registered at 82.3 cm from center
+16:23:04 [INFO] [TARGET LOCK] Verifying target (GREEN ALL_SHAPES) at Pitch:-8.4°
+16:23:04 [INFO] [TARGET MARKED] Target marked at Grid(0, 4) from distance 108.6 cm
+16:23:04 [INFO] [TARGET PASSED] ID#4: GREEN (RECT_V) at World (10.0, 343.5)
+16:23:04 [INFO] 📸 [TARGET INSPECTION SAVED] Image saved: 'detected_targets\Target_ID4_green_RECT_V_PASSED_20260930_162304.png'
+16:23:04 [INFO] [CLOSE FIRING] Target detected within 110.0 cm -> Fine alignment & Firing...
+16:23:06 [INFO] 🔥 [BLASTER FIRING] Shooting IR Laser at target (GREEN RECT_V)!
+16:23:06 [INFO] [BLASTER FIRING] IR Firing completed successfully.
+16:23:06 [INFO] [TARGET MARKED FROM DISTANCE] Target registered at 108.6 cm from center
+16:23:07 [INFO] [TOF ALIGNMENT] Wall (RIGHT) imbalance L:20.1 cm, R:21.6 cm | Correcting Yaw: -2.0°
+16:23:10 [INFO] [FAST SAFETY BRAKE] Front wall detected! Ground dist: 28.7 cm <= 30.0 cm | Traveled: 57.4 cm
+16:23:10 [INFO] --- STEP 9 | Grid(1, 5) | Time: 70.9s ---
+16:23:12 [INFO] [TARGET LOCK] Verifying target (GREEN ALL_SHAPES) at Pitch:-8.5°
+16:23:13 [INFO] [TARGET REJECTED] Duplicate target detected at distance 16.3 cm
+16:23:13 [INFO] 📸 [TARGET INSPECTION SAVED] Image saved: 'detected_targets\Target_ID4_green_RECT_V_REJECTED_DUP_20260930_162313.png'
+16:23:13 [INFO] [CLOSE FIRING] Target detected within 110.0 cm -> Fine alignment & Firing...
+16:23:13 [INFO] 🔥 [BLASTER FIRING] Shooting IR Laser at target (GREEN RECT_V)!
+16:23:14 [INFO] [BLASTER FIRING] IR Firing completed successfully.
+16:23:14 [INFO] [TARGET MARKED FROM DISTANCE] Target registered at 80.2 cm from center
+16:23:15 [INFO] [TURNING START] Target: -90° | Current: 1.5° | Diff: -91.5°
+16:23:17 [INFO] [TURNING COMPLETED] Settled Heading: -90.1°
+16:23:19 [INFO] [FAST SAFETY BRAKE] Front wall detected! Ground dist: 29.7 cm <= 30.0 cm | Traveled: 54.1 cm
+16:23:19 [INFO] --- STEP 10 | Grid(0, 5) | Time: 80.3s ---
+16:23:22 [INFO] [TARGET LOCK] Verifying target (GREEN ALL_SHAPES) at Pitch:-10.0°
+16:23:23 [INFO] [TARGET REJECTED] Duplicate target detected at distance 15.0 cm
+16:23:23 [INFO] 📸 [TARGET INSPECTION SAVED] Image saved: 'detected_targets\Target_ID4_green_RECT_V_REJECTED_DUP_20260930_162323.png'
+16:23:23 [INFO] [CLOSE FIRING] Target detected within 110.0 cm -> Fine alignment & Firing...
+16:23:25 [INFO] [TARGET MARKED FROM DISTANCE] Target registered at 77.9 cm from center
+16:23:25 [INFO] [TARGET LOCK] Verifying target (BLUE ALL_SHAPES) at Pitch:7.7°
+16:23:28 [INFO] [TURNING START] Target: -180° | Current: -90.6° | Diff: -89.4°
+16:23:30 [INFO] [TURNING COMPLETED] Settled Heading: -179.8°
+16:23:32 [INFO] [FAST SAFETY BRAKE] Front wall detected! Ground dist: 28.6 cm <= 30.0 cm | Traveled: 58.4 cm
+16:23:32 [INFO] --- STEP 11 | Grid(0, 4) | Time: 93.1s ---
+16:23:35 [INFO] [TARGET LOCK] Verifying target (GREEN ALL_SHAPES) at Pitch:-5.9°
+16:23:38 [INFO] [TURNING START] Target: 90° | Current: -179.8° | Diff: -90.2°
+16:23:40 [INFO] [TURNING COMPLETED] Settled Heading: 90.2°
+16:23:42 [INFO] [FAST SAFETY BRAKE] Front wall detected! Ground dist: 27.2 cm <= 30.0 cm | Traveled: 56.4 cm
+16:23:42 [INFO] --- STEP 12 | Grid(1, 4) | Time: 102.9s ---
+16:23:42 [INFO] [CENTERING MICRO] Sharp IR (L:999.0, R:7.8) | Gentle Shift: 2.5 cm
+16:23:45 [INFO] [TARGET LOCK] Verifying target (GREEN ALL_SHAPES) at Pitch:-6.7°
+16:23:46 [INFO] [TARGET LOCK] Verifying target (GREEN ALL_SHAPES) at Pitch:-7.6°
+16:23:47 [INFO] [TARGET REJECTED] Duplicate target detected at distance 2.6 cm
+16:23:47 [INFO] 📸 [TARGET INSPECTION SAVED] Image saved: 'detected_targets\Target_ID4_green_CIRCLE_REJECTED_DUP_20260930_162347.png'
+16:23:47 [INFO] [CLOSE FIRING] Target detected within 110.0 cm -> Fine alignment & Firing...
+16:23:49 [INFO] [TARGET MARKED FROM DISTANCE] Target registered at 80.5 cm from center
+16:23:51 [INFO] [TURNING START] Target: -180° | Current: 90.0° | Diff: 90.0°
+16:23:53 [INFO] [TURNING COMPLETED] Settled Heading: 179.6°
+16:23:55 [INFO] --- STEP 13 | Grid(1, 3) | Time: 116.1s ---
+16:23:58 [INFO] [TARGET LOCK] Verifying target (GREEN ALL_SHAPES) at Pitch:-3.4°
+16:23:59 [INFO] [TARGET REJECTED] Duplicate target detected at distance 8.6 cm
+16:23:59 [INFO] 📸 [TARGET INSPECTION SAVED] Image saved: 'detected_targets\Target_ID4_green_RECT_H_REJECTED_DUP_20260930_162359.png'
+16:23:59 [INFO] [TARGET MARKED FROM DISTANCE] Target registered at 133.5 cm from center
+16:23:59 [INFO] [TOF ALIGNMENT] Open space detected ahead & sides. Skipping ToF alignment.
+16:24:00 [INFO] [TURNING START] Target: 90° | Current: -179.2° | Diff: -90.8°
+16:24:02 [INFO] [TURNING COMPLETED] Settled Heading: 89.9°
+16:24:04 [INFO] [FAST SAFETY BRAKE] Front wall detected! Ground dist: 29.5 cm <= 30.0 cm | Traveled: 59.9 cm
+16:24:04 [INFO] --- STEP 14 | Grid(2, 3) | Time: 125.0s ---
+16:24:07 [INFO] [TARGET LOCK] Verifying target (BLUE ALL_SHAPES) at Pitch:6.2°
+16:24:08 [INFO] [TARGET LOCK] Verifying target (RED ALL_SHAPES) at Pitch:-4.8°
+16:24:09 [INFO] [TARGET LOCK] Verifying target (YELLOW ALL_SHAPES) at Pitch:-7.7°
+16:24:11 [INFO] [TURNING START] Target: 0° | Current: 89.9° | Diff: -89.9°
+16:24:13 [INFO] [TURNING COMPLETED] Settled Heading: 0.5°
+16:24:15 [INFO] --- STEP 15 | Grid(2, 4) | Time: 136.5s ---
+16:24:19 [INFO] [TARGET LOCK] Verifying target (RED ALL_SHAPES) at Pitch:-9.2°
+16:24:19 [INFO] [TARGET LOCK] Verifying target (YELLOW ALL_SHAPES) at Pitch:-15.0°
+16:24:24 [INFO] [FAST SAFETY BRAKE] Front wall detected! Ground dist: 19.7 cm <= 30.0 cm | Traveled: 66.0 cm
+16:24:24 [INFO] --- STEP 16 | Grid(2, 5) | Time: 144.9s ---
+16:24:24 [INFO] [CENTERING MICRO] Sharp IR (L:21.9, R:14.4) | Gentle Shift: 2.5 cm
+16:24:29 [INFO] [TURNING START] Target: 90° | Current: 1.3° | Diff: 88.7°
+16:24:31 [INFO] [TURNING COMPLETED] Settled Heading: 89.9°
+16:24:32 [INFO] [EXPORT SUCCESS] Map_Data_Round1.json exported successfully
+16:24:32 [INFO] [EXPORT SUCCESS] Round2_Target_Plan.json exported for Round 2 optimization
+16:24:32 [INFO] [SYSTEM TERMINATION] Saving final map snapshot and telemetry...
+16:24:32 [INFO] [EXPORT SUCCESS] Map_Data_Round1.json exported successfully
+16:24:32 [INFO] [EXPORT SUCCESS] Round2_Target_Plan.json exported for Round 2 optimization
+16:24:33 [INFO] [FAST SAFETY BRAKE] Front wall detected! Ground dist: 27.2 cm <= 30.0 cm | Traveled: 55.1 cm
+16:24:33 [INFO] [SYSTEM] Connection closed cleanly. Final map saved as 'final_map.png'.
+16:24:33 [ERROR] Client: send_sync_msg, client recv_task is not running.
