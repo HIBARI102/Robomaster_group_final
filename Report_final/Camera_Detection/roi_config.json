@@ -1,0 +1,6 @@
+{
+  "roi_top_ratio": 0.2,
+  "roi_bottom_ratio": 0.8,
+  "roi_left_ratio": 0.0,
+  "roi_right_ratio": 1.0
+}
