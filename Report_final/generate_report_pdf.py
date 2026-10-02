@@ -311,7 +311,7 @@ class NumberedCanvas(canvas.Canvas):
         # Running Header (Page 2+)
         self.setFont(FONT_REGULAR, 8)
         self.setFillColor(colors.HexColor("#64748B"))
-        self.drawString(18*mm, page_h - 12*mm, "รายงานทางวิศวกรรม: สถาปัตยกรรมระบบหุ่นยนต์อัตโนมัติ RoboMaster EP")
+        self.drawString(18*mm, page_h - 12*mm, "รายงานคำอธิบายหลักการทำงานของชุดโค้ดโปรแกรมหุ่นยนต์ RoboMaster EP")
         
         self.setStrokeColor(BORDER_COLOR)
         self.setLineWidth(0.6)
@@ -375,8 +375,8 @@ def build_pdf():
     title_main = ParagraphStyle(
         'ThaiTitleMain',
         fontName=FONT_BOLD,
-        fontSize=16.5,
-        leading=22,
+        fontSize=16.0,
+        leading=21,
         textColor=PRIMARY,
         alignment=1,
         spaceAfter=4
@@ -385,20 +385,20 @@ def build_pdf():
     title_sub = ParagraphStyle(
         'ThaiTitleSub',
         fontName=FONT_REGULAR,
-        fontSize=10,
-        leading=14.5,
+        fontSize=9.8,
+        leading=14,
         textColor=SECONDARY,
         alignment=1,
-        spaceAfter=8
+        spaceAfter=7
     )
 
     h1_style = ParagraphStyle(
         'ThaiH1',
         fontName=FONT_BOLD,
-        fontSize=12.5,
-        leading=16.5,
+        fontSize=12.0,
+        leading=16,
         textColor=PRIMARY,
-        spaceBefore=8,
+        spaceBefore=7,
         spaceAfter=4,
         keepWithNext=True
     )
@@ -463,23 +463,23 @@ def build_pdf():
     story = []
 
     # =========================================================================
-    # PAGE 1: TITLE, AUTHOR, EXECUTIVE SUMMARY & ARCHITECTURE
+    # PAGE 1: TITLE, AUTHOR, CODE OVERVIEW & ARCHITECTURE
     # =========================================================================
     story.append(Spacer(1, 2*mm))
-    story.append(Paragraph(th("รายงานฉบับสมบูรณ์ (Master Technical Documentation)"), title_sub))
-    story.append(Paragraph(th("สถาปัตยกรรมระบบหุ่นยนต์อัตโนมัติ RoboMaster EP สำหรับการสำรวจเขาวงกตและยิงเป้าหมาย"), title_main))
-    story.append(Paragraph(th("Autonomous Maze Exploration, SLAM Mapping, Computer Vision & Precision Firing Architecture"), title_sub))
-    story.append(Spacer(1, 2*mm))
+    story.append(Paragraph(th("รายงานสรุปเชิงเทคนิค (Technical Code Architecture Report)"), title_sub))
+    story.append(Paragraph(th("คำอธิบายหลักการทำงานของชุดโค้ดโปรแกรมหุ่นยนต์อัตโนมัติ RoboMaster EP"), title_main))
+    story.append(Paragraph(th("Autonomous Maze SLAM Navigation, Computer Vision & Precision Firing System"), title_sub))
+    story.append(Spacer(1, 1.5*mm))
 
     # Author Box Table
     author_info = [
         [
-            Paragraph(th("<b>ผู้จัดทำโครงการ:</b> นายคุณัชญ์ ทวีรัตน์"), body_style),
+            Paragraph(th("<b>ผู้จัดทำรายงาน:</b> นายคุณัชญ์ ทวีรัตน์"), body_style),
             Paragraph(th("<b>รหัสนักศึกษา:</b> 6810110038"), body_style)
         ],
         [
             Paragraph(th("<b>แพลตฟอร์ม:</b> DJI RoboMaster EP + Python SDK"), body_style),
-            Paragraph(th("<b>หมวดหมู่วิศวกรรม:</b> Autonomous Robotics & Computer Vision"), body_style)
+            Paragraph(th("<b>หัวข้อรายงาน:</b> หลักการทำงานของโค้ดระบบนำทาง SLAM และคอมพิวเตอร์วิทัศน์"), body_style)
         ]
     ]
     author_table = Table(author_info, colWidths=[87*mm, 87*mm])
@@ -492,17 +492,15 @@ def build_pdf():
     story.append(author_table)
     story.append(Spacer(1, 3*mm))
 
-    story.append(Paragraph(th("1. บทสรุปผู้บริหารและภาพรวมโครงการ (Executive Summary)"), h1_style))
-    story.append(HRFlowable(width="100%", thickness=1.2, color=PRIMARY, spaceAfter=6))
+    story.append(Paragraph(th("1. ภาพรวมและหลักการทำงานของระบบโค้ด (System & Code Overview)"), h1_style))
+    story.append(HRFlowable(width="100%", thickness=1.2, color=PRIMARY, spaceAfter=5))
     
     exec_summary_text = (
-        "โครงการนี้มุ่งเน้นการพัฒนาระบบหุ่นยนต์อัตโนมัติเต็มรูปแบบบนแพลตฟอร์ม <b>DJI RoboMaster EP</b> "
-        "เพื่อปฏิบัติภารกิจในเขาวงกตขนาดกริดมาตรฐาน 60 x 60 cm โดยแบ่งการทำงานออกเป็น 2 รอบอย่างเป็นระบบ:\n"
-        "• <b>รอบที่ 1 (Round 1 - Exploration & Elimination)</b>: เคลื่อนที่สำรวจเขาวงกตอัตโนมัติด้วยอัลกอริทึม DFS Frontier "
-        "และ BFS Backtracking สร้างแผนที่ดิจิทัล (Digital SLAM Grid) ตรวจจับและระบุสีและรูปทรงของเป้าหมายบนกำแพง "
-        "เล็งยิงเป้าหมายที่ตรงตามกติกาให้ล้มทั้งหมดด้วยระบบ Adaptive Closed-Loop Visual Servoing และนำทางกลับจุดเริ่มต้น (0, 0) อย่างปลอดภัย\n"
-        "• <b>รอบที่ 2 (Round 2 - Shortest Path Fast Execution)</b>: ถ่ายทอดข้อมูลแผนที่เขาวงกตและพิกัดเป้าหมายจากรอบที่ 1 "
-        "เพื่อคำนวณเส้นทางที่สั้นที่สุด (Global Shortest Path) และขับเคลื่อนไปยิงเป้าหมายที่เหลือให้ครบในเวลาที่เร็วที่สุด"
+        "รายงานฉบับนี้จัดทำขึ้นเพื่ออธิบายหลักการทำงานเชิงลึกของชุดโปรแกรมภาษา Python สำหรับควบคุมหุ่นยนต์ <b>DJI RoboMaster EP</b> "
+        "ในการปฏิบัติภารกิจเขาวงกตขนาดกริดมาตรฐาน 60 x 60 cm โดยโครงสร้างโค้ดถูกแบ่งออกเป็น 3 ส่วนหลักอย่างเป็นระบบ:\n"
+        "• <b>การปรับเทียบเซนเซอร์ (Calibration Module)</b>: โค้ดสำหรับคำนวณ Fitting สมการถดถอยพหุนามแปลงค่าดิบของเซนเซอร์ ToF, Sharp IR และระยะก้าวเดินของแชสซี\n"
+        "• <b>การตรวจจับภาพและการเล็งยิง (Vision & Firing Engine)</b>: โค้ดประมวลผล OpenCV สกัดสี HSV แบบ Dual-band, กรองสัญญาณรบกวน, จำแนกรูปทรงเรขาคณิต และระบบ Closed-Loop Visual Servoing ควบคุม Gimbal\n"
+        "• <b>ระบบนำทางอัตโนมัติ SLAM (Round 1 Autonomous Run)</b>: โค้ดหลัก <code>run_round1.py</code> ผสานการสแกนกำแพง 4 ทิศทาง, อัลกอริทึม DFS Frontier, BFS Dead-End Backtracking และ Sharp IR Safety Guardrail"
     )
     story.append(Paragraph(th(exec_summary_text), body_style))
     story.append(Spacer(1, 2*mm))
@@ -520,7 +518,7 @@ def build_pdf():
     specs_data = [
         [Paragraph(th("<b>ส่วนประกอบ / โมดูล</b>"), table_header_style),
          Paragraph(th("<b>มิติและค่าพารามิเตอร์ทางกายภาพ</b>"), table_header_style),
-         Paragraph(th("<b>หน้าที่และบทบาทในการทำงาน</b>"), table_header_style)],
+         Paragraph(th("<b>หน้าที่และบทบาทในการทำงานของโค้ด</b>"), table_header_style)],
         
         [Paragraph(th("<b>แชสซีและล้อ (Chassis)</b>"), table_cell_bold),
          Paragraph(th("ยาว 33 cm, กว้าง 25 cm, 4 Mecanum Wheels"), table_cell_style),
@@ -562,12 +560,12 @@ def build_pdf():
     story.append(Spacer(1, 4*mm))
 
     # SECTION 3: CALIBRATION
-    story.append(Paragraph(th("3. การปรับเทียบเซนเซอร์และระบบขับเคลื่อน (Calibration Module)"), h1_style))
+    story.append(Paragraph(th("3. หลักการทำงานของโค้ดปรับเทียบเซนเซอร์ (Calibration Module)"), h1_style))
     story.append(HRFlowable(width="100%", thickness=1, color=PRIMARY, spaceAfter=5))
 
     calib_desc = (
-        "ความแม่นยำของระบบอัตโนมัติขึ้นอยู่กับความถูกต้องของข้อมูลจากเซนเซอร์ ระบบจึงผ่านการปรับเทียบเชิงลึก 3 ส่วนหลัก "
-        "โดยนำข้อมูลดิบมาผ่านกระบวนการถดถอยพหุนาม (Polynomial Regression) เพื่อแปลงสัญญาณดิบเป็นระยะทางจริง:"
+        "ความแม่นยำของระบบอัตโนมัติขึ้นอยู่กับความถูกต้องของข้อมูลจากเซนเซอร์ โค้ดในโฟลเดอร์ <code>calibration/</code> "
+        "จึงทำการเก็บข้อมูลดิบและคำนวณการถดถอยพหุนาม (Polynomial Regression) เพื่อแปลงสัญญาณดิบเป็นระยะทางจริง:"
     )
     story.append(Paragraph(th(calib_desc), body_style))
     story.append(Spacer(1, 1*mm))
@@ -576,8 +574,8 @@ def build_pdf():
     story.append(Spacer(1, 2*mm))
 
     calib_detail_1 = (
-        "• <b>3.1 การปรับเทียบระยะการเดินของแชสซี (Chassis Step 60 cm)</b>: "
-        "ใช้การผสานสัญญาณระหว่าง Wheel Encoders และ IMU Attitude ไจโรสโคป ด้วยการควบคุม <b>PID Yaw Holding</b> "
+        "• <b>3.1 การปรับเทียบระยะการเดินของแชสซี (<code>calibrate_distance.py</code>)</b>: "
+        "โค้ดผสานสัญญาณระหว่าง Wheel Encoders และ IMU Attitude ไจโรสโคป ด้วยการควบคุม <b>PID Yaw Holding</b> "
         "(Kp = 1.2, Ki = 0.05, Kd = 0.1) เพื่อล็อคทิศทางมุม 0° ป้องกันการดริฟท์ของล้อ Mecanum "
         "ร่วมกับโปรไฟล์ความเร็วแบบ <b>Ramp-Down Deceleration</b> โดยเริ่มชะลอความเร็วลงเหลือ 0.10 m/s "
         "ที่ระยะ 85% ของช่อง (18 cm สุดท้าย) และสั่ง Active Brake เมื่อถึง 60 cm เพื่อคำนวณ Distance Factor บันทึกลง <code>distance_calib_params.json</code>"
@@ -585,15 +583,15 @@ def build_pdf():
     story.append(Paragraph(th(calib_detail_1), body_style))
 
     calib_detail_2 = (
-        "• <b>3.2 การปรับเทียบเซนเซอร์วัดระยะ ToF บน Gimbal (Quadratic Fit)</b>: "
+        "• <b>3.2 การปรับเทียบเซนเซอร์วัดระยะ ToF บน Gimbal (<code>calibration_ToF.py</code>)</b>: "
         "เซนเซอร์ Time-of-Flight มีความคลาดเคลื่อนแบบไม่เชิงเส้นในระยะ 10 - 180 cm "
-        "จึงทำการเก็บตัวอย่างละ 100 ค่า นำค่ามัธยฐาน (Median) มาทำ Quadratic Curve Fitting ได้สมการ: "
+        "โค้ดทำการเก็บตัวอย่างละ 100 ค่า นำค่ามัธยฐาน (Median) มาทำ Quadratic Curve Fitting ได้สมการ: "
         "<b>y = 0.000125 x² + 0.9854 x - 0.4500 (R² = 0.9992)</b> บันทึกพารามิเตอร์ลง <code>tof_calib_params.json</code>"
     )
     story.append(Paragraph(th(calib_detail_2), body_style))
 
     calib_detail_3 = (
-        "• <b>3.3 การปรับเทียบเซนเซอร์ Sharp Infrared สำหรับระบบ Safety Guardrail</b>: "
+        "• <b>3.3 การปรับเทียบเซนเซอร์ Sharp Infrared สำหรับระบบ Safety Guardrail (<code>sharp_calibration.py</code>)</b>: "
         "เซนเซอร์ Sharp IR ด้านข้างซ้ายและขวาอ่านค่าแรงดันไฟฟ้าสัญญาณอนาล็อก (ADC: 0–1023) "
         "แปลงเป็นระยะทางจริง (5 - 30 cm) ผ่านสมการกำลังสองใน <code>calibration_sharp_poly.json</code> "
         "พร้อมทั้งกำหนด Noise Baseline ในที่โล่งเพื่อป้องกันการสั่งงานผิดพลาด โดยหากระยะด้านข้างน้อยกว่า 11 cm "
@@ -605,16 +603,16 @@ def build_pdf():
     # PAGE 3: COMPUTER VISION & SHAPE CLASSIFICATION
     # =========================================================================
     story.append(PageBreak())
-    story.append(Paragraph(th("4. ระบบคอมพิวเตอร์วิทัศน์และการจำแนกรูปทรง (Computer Vision Module)"), h1_style))
+    story.append(Paragraph(th("4. หลักการทำงานของโค้ดตรวจจับภาพและการจำแนกรูปทรง (Computer Vision Module)"), h1_style))
     story.append(HRFlowable(width="100%", thickness=1, color=PRIMARY, spaceAfter=5))
 
     vision_desc = (
-        "ระบบตรวจจับเป้าหมายทำงานแบบ Real-time บนภาพ BGR จากกล้องหลักผ่านกระบวนการ Pipeline ดังนี้:\n"
+        "โค้ดประมวลผลภาพในโฟลเดอร์ <code>Camera_Detection/</code> ทำงานแบบ Real-time บนภาพ BGR จากกล้องหลักผ่านกระบวนการ Pipeline ดังนี้:\n"
         "1. <b>ROI Masking</b>: บังคับใช้หน้ากากไบนารี <code>roi_mask.png</code> เพื่อตัดส่วนรบกวนของแชสซีและขอบล้อออก\n"
         "2. <b>Dual-Band Red HSV Filtering</b>: เนื่องจากสีแดงมีค่า Hue คร่อมรอยต่อ 0°-12° และ 165°-180° "
-        "ระบบจึงสกัดสีแดง 2 ช่วงแล้วรวมด้วย Bitwise-OR: <code>Mask_Red = inRange(HSV, Low1, Up1) OR inRange(HSV, Low2, Up2)</code> "
+        "โค้ดจึงสกัดสีแดง 2 ช่วงแล้วรวมด้วย Bitwise-OR: <code>Mask_Red = inRange(HSV, Low1, Up1) OR inRange(HSV, Low2, Up2)</code> "
         "ส่วนสี Yellow, Green, Blue ใช้ Single-band Filtering ปกติ\n"
-        "3. <b>Morphological Noise Removal</b>: ผ่านกระบวนการ Open และ Close ขนาด Kernel 5 x 5 เพื่อกำจัดจุดรบกวนและเชื่อมเม็ดสีให้ทึบสมบูรณ์\n"
+        "3. <b>Morphological Noise Removal</b>: ผ่านฟังก์ชัน Open และ Close ขนาด Kernel 5 x 5 เพื่อกำจัดจุดรบกวนและเชื่อมเม็ดสีให้ทึบสมบูรณ์\n"
         "4. <b>Hybrid Edge Detection</b>: ผสานขอบจาก Sobel Gradient (G = √(Gx² + Gy²)) ร่วมกับ Canny Edge Detector (50, 150) ด้วย Bitwise-OR\n"
         "5. <b>Geometric Shape Decision Tree</b>: จำแนก 4 รูปทรงด้วยคุณสมบัติทางเรขาคณิต"
     )
@@ -636,20 +634,20 @@ def build_pdf():
     story.append(Spacer(1, 3.5*mm))
 
     # SECTION 5: TARGET MOCK & ADAPTIVE FIRING
-    story.append(Paragraph(th("5. ระบบทดสอบการเล็งและยิงเป้าหมายจำลอง (Target Mock & Adaptive Firing)"), h1_style))
+    story.append(Paragraph(th("5. โค้ดจำลองระบบเล็งยิงเป้าหมาย (Target Mock & Adaptive Firing Module)"), h1_style))
     story.append(HRFlowable(width="100%", thickness=1, color=PRIMARY, spaceAfter=5))
 
     mock_desc = (
-        "โมดูล <code>test_firing_mock.py</code> พัฒนาขึ้นเพื่อจำลองวงจรการทำงานของการค้นหา ยืนยัน เล็ง และยิงเป้าหมาย "
-        "โดยมีฟีเจอร์สำคัญที่ถูกนำไปใช้จริงใน Round 1 ดังนี้:\n"
-        "• <b>Pygame Interactive Rule Configurator</b>: เมทริกซ์ 4 x 4 ให้ผู้ใช้เลือกคู่สีและรูปทรงที่ถูกต้องตามโจทย์การแข่งขันแบบ <i>Strict Matching Principle</i> "
-        "ระบบจะไม่ยิงเป้าหมายที่สีตรงแต่รูปทรงไม่ตรง หรือรูปทรงตรงแต่สีไม่ตรงเด็ดขาด\n"
+        "โค้ด <code>test_firing_mock.py</code> ในโฟลเดอร์ <code>Target_mock/</code> พัฒนาขึ้นเพื่อทดสอบวงจรการค้นหา ยืนยัน เล็ง และยิงเป้าหมาย "
+        "โดยมีหลักการและฟังก์ชันสำคัญที่นำไปใช้งานในโค้ดหลัก ดังนี้:\n"
+        "• <b>Pygame Interactive Rule Configurator</b>: เมทริกซ์ 4 x 4 ให้ผู้ใช้เลือกคู่สีและรูปทรงที่ต้องการยิงแบบ <i>Strict Matching Principle</i> "
+        "โค้ดจะไม่ยิงเป้าหมายที่สีตรงแต่รูปทรงไม่ตรง หรือรูปทรงตรงแต่สีไม่ตรงเด็ดขาด\n"
         "• <b>Adaptive Speed Closed-Loop Aiming</b>: ควบคุม Gimbal ด้วย Visual Servoing แปรผันความเร็วตามระยะคลาดเคลื่อนพิกเซล:\n"
-        "  - Error รวม E > 120 px -> Gimbal Speed = 540°/s (เคลื่อนที่ความเร็วสูง)\n"
+        "  - Error รวม E > 120 px -> Gimbal Speed = 540°/s (เคลื่อนที่ความเร็วสูงเข้าหาเป้า)\n"
         "  - 50 < E ≤ 120 px -> Gimbal Speed = 320°/s (เคลื่อนที่ความเร็วปานกลาง)\n"
         "  - E ≤ 50 px -> Gimbal Speed = 140°/s (ความเร็วละเอียด นุ่มนวล ป้องกัน Overshooting)\n"
         "• <b>Gravity Drop Offset</b>: ชดเชยแนวดิ่ง ey = y_target - (y_center - 32 px) เพื่อให้วิถีกระสุนเจลเข้ากลางเป้าหมายอย่างแม่นยำ\n"
-        "• <b>Dynamic ROI Masking</b>: เมื่อยิงเป้าหมายเสร็จสิ้น ระบบจะถมพิกเซลสีดำทับ Bounding Box ของเป้าหมายนั้นขยาย +15 px ทันที ป้องกันการเล็งซ้ำ\n"
+        "• <b>Dynamic ROI Masking</b>: เมื่อยิงเป้าหมายเสร็จสิ้น โค้ดจะถมพิกเซลสีดำทับ Bounding Box ของเป้าหมายนั้นขยาย +15 px ทันที ป้องกันการเล็งซ้ำ\n"
         "• <b>Chassis Retreat & Return Maneuver</b>: หากอยู่ชิดกำแพงจนกล้องก้มมองไม่เห็นเป้าหมาย แชสซีจะถอยหลังชั่วคราวเพื่อยิง แล้วขับเคลื่อนกลับพิกัดเดิม"
     )
     story.append(Paragraph(th(mock_desc), body_style))
@@ -658,27 +656,27 @@ def build_pdf():
     # PAGE 4: SLAM NAVIGATION & MESH ARCHITECTURE
     # =========================================================================
     story.append(PageBreak())
-    story.append(Paragraph(th("6. ระบบสำรวจเขาวงกต ทำแผนที่ SLAM และระบบควบคุม (Round 1 Autonomous Run)"), h1_style))
+    story.append(Paragraph(th("6. โค้ดระบบนำทาง SLAM และการควบคุมการเคลื่อนที่ (Round 1 Main Code)"), h1_style))
     story.append(HRFlowable(width="100%", thickness=1, color=PRIMARY, spaceAfter=5))
 
     slam_intro = (
-        "ในภารกิจรอบที่ 1 หุ่นยนต์เริ่มต้นจากช่อง (0, 0) และดำเนินการสำรวจแบบอัตโนมัติตลอดเวลาจำกัด 9.5 นาที "
+        "ในสคริปต์หลัก <code>run_round1.py</code> โค้ดควบคุมให้หุ่นยนต์เริ่มต้นจากช่อง (0, 0) และดำเนินการสำรวจแบบอัตโนมัติตลอดเวลาจำกัด 9.5 นาที "
         "โดยผสานระบบ SLAM, การตรวจจับกำแพง 4 ทิศทาง, การยิงเป้าหมาย และการหลบหลีกสิ่งกีดขวาง:"
     )
     story.append(Paragraph(th(slam_intro), body_style))
     story.append(Spacer(1, 2*mm))
 
     slam_col_text = (
-        "<b>6.1 การตรวจจับกำแพง 4 ทิศทาง (4-Way Sensing)</b><br/>"
+        "<b>6.1 การตรวจจับกำแพง 4 ทิศทาง (4-Way Wall Sensing)</b><br/>"
         "เมื่อเข้าสู่กึ่งกลางช่อง Gimbal จะหมุนสแกน 4 ทิศ (Ahead 0°, Right 90°, Back 180°, Left -90°) "
         "แปลงเป็นทิศสัมบูรณ์ (Heading + Yaw) mod 360 หากระยะ ToF ≤ 52.0 cm "
         "ถือว่ามีกำแพง และซิงค์แผนที่ 2 ทิศทาง (Mutual Sync) ไปยังช่องข้างเคียงทันที<br/><br/>"
         "<b>6.2 อัลกอริทึม SLAM & Path Planning</b><br/>"
         "• <b>DFS Exploration</b>: ให้ความสำคัญกับทิศทางตรงไปข้างหน้าก่อนเพื่อลดการหมุนตัวของแชสซี<br/>"
-        "• <b>BFS Dead-End Backtracking</b>: เมื่อพบทางตัน ระบบใช้ Breadth-First Search คำนวณเส้นทางที่สั้นที่สุดถอยกลับไปยัง Frontier Cell ที่ยังเปิดอยู่<br/>"
-        "• <b>Shortest Path Return to Base</b>: เมื่อสำรวจครบทุกช่อง ใช้ BFS วิ่งกลับ (0, 0) โดยอัตโนมัติ<br/><br/>"
+        "• <b>BFS Dead-End Backtracking</b>: เมื่อพบทางตัน โค้ดใช้ Breadth-First Search คำนวณเส้นทางที่สั้นที่สุดถอยกลับไปยัง Frontier Cell ที่ยังเปิดอยู่<br/>"
+        "• <b>Shortest Path Return to Base</b>: เมื่อสำรวจครบทุกช่อง โค้ดใช้ BFS วิ่งกลับ (0, 0) โดยอัตโนมัติ<br/><br/>"
         "<b>6.3 การควบคุมและ Pygame Dashboard</b><br/>"
-        "แสดงตารางแผนที่ 60x60 cm, ตำแหน่งหุ่นยนต์, สถานะกำแพง, เป้าหมายที่ยิงแล้ว, ค่าเซนเซอร์ ToF 4 ทิศ และ Sharp IR แบบ Real-time"
+        "โค้ดแสดงหน้าต่างแสดงผลแผนที่สด 60x60 cm, พิกัดหุ่นยนต์, สถานะกำแพง, เป้าหมายที่ยิงแล้ว, ค่าเซนเซอร์ ToF 4 ทิศ และ Sharp IR แบบ Real-time"
     )
     
     slam_table_layout = Table([
@@ -693,12 +691,12 @@ def build_pdf():
     story.append(Spacer(1, 4*mm))
 
     # SECTION 7: KEY TECHNOLOGY MATRIX & CONFIG CONSTANTS
-    story.append(Paragraph(th("7. ตารางสรุปเทคโนโลยีและค่าคงที่ระบบ (Technology Matrix & Constants)"), h1_style))
+    story.append(Paragraph(th("7. ตารางสรุปอัลกอริทึมและเทคนิคที่ใช้ในโค้ด (Algorithm & Method Matrix)"), h1_style))
     story.append(HRFlowable(width="100%", thickness=1, color=PRIMARY, spaceAfter=5))
 
     tech_data = [
         [Paragraph(th("<b>โมดูล / ระบบย่อย</b>"), table_header_style),
-         Paragraph(th("<b>อัลกอริทึม / เทคนิคทางคณิตศาสตร์</b>"), table_header_style),
+         Paragraph(th("<b>อัลกอริทึม / ฟังก์ชันในโค้ด</b>"), table_header_style),
          Paragraph(th("<b>วัตถุประสงค์และประโยชน์เชิงวิศวกรรม</b>"), table_header_style)],
 
         [Paragraph(th("<b>Chassis Motion Control</b>"), table_cell_bold),
@@ -745,7 +743,7 @@ def build_pdf():
 
     # PAGE 5: SYSTEM CONSTANTS, OUTPUTS & CONCLUSION
     story.append(PageBreak())
-    story.append(Paragraph(th("<b>ตารางค่าคงที่และพารามิเตอร์สำคัญของระบบ (System Configuration Constants)</b>"), h2_style))
+    story.append(Paragraph(th("<b>ตารางค่าคงที่และพารามิเตอร์สำคัญของโค้ดระบบ (System Configuration Constants)</b>"), h2_style))
     const_data = [
         [Paragraph(th("<b>พารามิเตอร์</b>"), table_header_style),
          Paragraph(th("<b>ค่าที่ตั้งไว้</b>"), table_header_style),
@@ -794,46 +792,27 @@ def build_pdf():
     story.append(Spacer(1, 4*mm))
 
     # SECTION 8: MISSION OUTPUTS & ROUND 2 HANDOFF
-    story.append(Paragraph(th("8. ข้อมูลผลลัพธ์และการส่งต่อข้อมูลสู่รอบที่ 2 (Outputs & Round 2 Handoff)"), h1_style))
+    story.append(Paragraph(th("8. ข้อมูลผลลัพธ์และการส่งออกไฟล์ข้อมูล (Generated Outputs & Artifacts)"), h1_style))
     story.append(HRFlowable(width="100%", thickness=1, color=PRIMARY, spaceAfter=5))
 
     outputs_desc = (
-        "เมื่อสิ้นสุดภารกิจการสำรวจในรอบที่ 1 ระบบจะส่งออกไฟล์ข้อมูลอัตโนมัติเพื่อใช้เป็นหลักฐานและส่งต่อให้รอบที่ 2:\n"
-        "1. <b><code>Map_Data_Round1.json</code></b>: แผนที่โครงสร้างเขาวงกตที่สมบูรณ์ พิกัดกำแพงทุกช่องสถานะ และตำแหน่งของเป้าหมายทั้งหมดที่ตรวจพบและยิงแล้ว\n"
-        "2. <b><code>exploration_telemetry.csv</code></b>: บันทึกประวัติการก้าวเดิน เวลา พิกัด (gx, gy), มุม Heading, ค่าระยะ ToF 4 ทิศ และสถานะกำแพงทุก Step\n"
-        "3. <b><code>exploration_log.txt</code></b>: บันทึกเหตุการณ์ การตัดสินใจของ State Machine และข้อผิดพลาดทั้งหมด\n"
-        "4. <b><code>detected_targets/</code></b>: ภาพถ่ายหลักฐานเป้าหมายที่เล็งยิงพร้อมกรอบ Bounding Box และ Class Label"
+        "เมื่อสิ้นสุดการทำงานของสคริปต์ <code>run_round1.py</code> โค้ดจะส่งออกไฟล์ข้อมูลอัตโนมัติเพื่อใช้บันทึกและประมวลผลต่อ:\n"
+        "1. <b><code>Map_Data_Round1.json</code></b>: ไฟล์ JSON บันทึกโครงสร้างแผนที่เขาวงกต พิกัดกำแพงทุกช่องสถานะ และตำแหน่งของเป้าหมายทั้งหมดที่ตรวจพบและยิงแล้ว\n"
+        "2. <b><code>exploration_telemetry.csv</code></b>: บันทึกข้อมูล Telemetry ประวัติการก้าวเดิน เวลา พิกัด (gx, gy), มุม Heading, ค่าระยะ ToF 4 ทิศ และสถานะกำแพงทุก Step\n"
+        "3. <b><code>exploration_log.txt</code></b>: บันทึกประวัติเหตุการณ์ (Event Logs), ลำดับการเปลี่ยนสถานะ State Machine และข้อผิดพลาดทั้งหมด\n"
+        "4. <b><code>detected_targets/</code></b>: โฟลเดอร์เก็บภาพถ่ายหลักฐานเป้าหมายที่เล็งยิงพร้อมกรอบ Bounding Box และ Class Label"
     )
     story.append(Paragraph(th(outputs_desc), body_style))
     story.append(Spacer(1, 4*mm))
 
     summary_box = (
-        "<b>สรุปภาพรวมความสำเร็จของโครงการ (Project Conclusion):</b><br/>"
-        "สถาปัตยกรรมระบบหุ่นยนต์อัตโนมัติ RoboMaster EP ได้รับการออกแบบให้ทำงานสอดประสานกันระหว่างฮาร์ดแวร์เซนเซอร์ "
-        "อัลกอริทึมการนำทาง SLAM และระบบประมวลผลภาพ Computer Vision อย่างสมบูรณ์แบบ "
-        "ช่วยให้หุ่นยนต์สามารถสำรวจเขาวงกตได้อย่างรวดเร็ว แม่นยำ ไม่ชนสิ่งกีดขวาง และทำลายเป้าหมายได้อย่างมีประสิทธิภาพสูงสุด "
-        "พร้อมสำหรับการแข่งขันและการต่อยอดทางวิศวกรรมหุ่นยนต์ขั้นสูง"
+        "<b>สรุปการทำงานของชุดโค้ดโปรแกรม (Technical Summary):</b><br/>"
+        "ชุดโค้ดโปรแกรมสำหรับหุ่นยนต์ RoboMaster EP ได้รับการออกแบบเชิงโมดูลาร์ (Modular Architecture) "
+        "โดยแบ่งแยกหน้าที่ระหว่างโมดูล Calibration, Computer Vision, SLAM Path Planning และ Motion Control ไว้อย่างเป็นระบบ "
+        "ทำให้โค้ดมีความยืดหยุ่น สามารถบำรุงรักษาและปรับแต่งพารามิเตอร์ได้อย่างรวดเร็ว "
+        "พร้อมรองรับการทำงานอัตโนมัติอย่างมีเสถียรภาพและแม่นยำสูง"
     )
     story.append(make_callout(summary_box, bg_color=SUCCESS_BG, border_color=SUCCESS_BORDER))
-    story.append(Spacer(1, 5*mm))
-
-    # Signature Block
-    sig_data = [
-        [
-            Paragraph(th("<b>ลงชื่อผู้จัดทำ:</b> ................................................................"), body_style),
-            Paragraph(th("<b>วันที่:</b> ................................................................"), body_style)
-        ],
-        [
-            Paragraph(th("(นายคุณัชญ์ ทวีรัตน์)"), body_style),
-            Paragraph(th("นักศึกษาผู้วิจัยและพัฒนาระบบ"), body_style)
-        ]
-    ]
-    sig_table = Table(sig_data, colWidths=[90*mm, 84*mm])
-    sig_table.setStyle(TableStyle([
-        ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
-        ('PADDING', (0, 0), (-1, -1), 4),
-    ]))
-    story.append(sig_table)
 
     # Build Document
     doc.build(story, canvasmaker=NumberedCanvas)
@@ -842,3 +821,4 @@ def build_pdf():
 
 if __name__ == "__main__":
     build_pdf()
+
